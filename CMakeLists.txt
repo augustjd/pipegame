@@ -1,10 +1,10 @@
 cmake_minimum_required(VERSION 3.0)
-project(Glitter)
+project(piper)
 
 option(GLFW_BUILD_DOCS OFF)
 option(GLFW_BUILD_EXAMPLES OFF)
 option(GLFW_BUILD_TESTS OFF)
-add_subdirectory(Glitter/Vendor/glfw)
+add_subdirectory(vendor/glfw)
 
 if(MSVC)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4")
@@ -15,19 +15,19 @@ else()
     endif()
 endif()
 
-include_directories(Glitter/Headers/
-                    Glitter/Vendor/glad/include/
-                    Glitter/Vendor/glfw/include/
-                    Glitter/Vendor/glm/
-                    Glitter/Vendor/stb/)
+include_directories(piper/Headers/
+                    vendor/glad/include/
+                    vendor/glfw/include/
+                    vendor/glm/
+                    vendor/stb/)
 
-file(GLOB VENDORS_SOURCES Glitter/Vendor/glad/src/glad.c)
-file(GLOB PROJECT_HEADERS Glitter/Headers/*.hpp)
-file(GLOB PROJECT_SOURCES Glitter/Sources/*.cpp)
-file(GLOB PROJECT_SHADERS Glitter/Shaders/*.comp
-                          Glitter/Shaders/*.frag
-                          Glitter/Shaders/*.geom
-                          Glitter/Shaders/*.vert)
+file(GLOB VENDORS_SOURCES vendor/glad/src/glad.c)
+file(GLOB PROJECT_HEADERS piper/Headers/*.hpp)
+file(GLOB PROJECT_SOURCES piper/Sources/*.cpp)
+file(GLOB PROJECT_SHADERS piper/Shaders/*.comp
+                          piper/Shaders/*.frag
+                          piper/Shaders/*.geom
+                          piper/Shaders/*.vert)
 file(GLOB PROJECT_CONFIGS CMakeLists.txt
                           Readme.md
                          .gitattributes
