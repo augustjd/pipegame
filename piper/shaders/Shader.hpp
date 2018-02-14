@@ -7,15 +7,13 @@
 
 class OpenGLResource {
 public:
-
-  operator GLint() const {
-    return _id;
-  }
-
-protected:
   OpenGLResource(GLint id)
     : _id(id)
   {
+  }
+
+  operator GLint() const {
+    return _id;
   }
 
   const GLint _id;
