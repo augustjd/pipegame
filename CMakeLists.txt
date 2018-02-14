@@ -6,28 +6,23 @@ option(GLFW_BUILD_EXAMPLES OFF)
 option(GLFW_BUILD_TESTS OFF)
 add_subdirectory(vendor/glfw)
 
+option(BUILD_TESTING OFF)
+add_subdirectory(vendor/eigen/)
+
 if(MSVC)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4")
 else()
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wpedantic -std=c++11")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wpedantic -std=c++14")
     if(NOT WIN32)
         set(GLAD_LIBRARIES dl)
     endif()
 endif()
 
-include_directories(piper/Headers/
-                    vendor/glad/include/
-                    vendor/glfw/include/
-                    vendor/glm/
-                    vendor/stb/)
-
 file(GLOB VENDORS_SOURCES vendor/glad/src/glad.c)
-file(GLOB PROJECT_HEADERS piper/Headers/*.hpp)
-file(GLOB PROJECT_SOURCES piper/Sources/*.cpp)
-file(GLOB PROJECT_SHADERS piper/Shaders/*.comp
-                          piper/Shaders/*.frag
-                          piper/Shaders/*.geom
-                          piper/Shaders/*.vert)
+file(GLOB PROJECT_SHADERS piper/shaders/*.comp
+                          piper/shaders/*.frag
+                          piper/shaders/*.geom
+                          piper/shaders/*.vert)
 file(GLOB PROJECT_CONFIGS CMakeLists.txt
                           Readme.md
                          .gitattributes
@@ -41,10 +36,29 @@ source_group("Vendors" FILES ${VENDORS_SOURCES})
 
 add_definitions(-DGLFW_INCLUDE_NONE
                 -DPROJECT_SOURCE_DIR=\"${PROJECT_SOURCE_DIR}\")
-add_executable(${PROJECT_NAME} ${PROJECT_SOURCES} ${PROJECT_HEADERS}
-                               ${PROJECT_SHADERS} ${PROJECT_CONFIGS}
-                               ${VENDORS_SOURCES})
+add_executable(${PROJECT_NAME}
+               piper/main.cpp
+
+               piper/glitter.hpp
+
+               piper/utils/filesystem.hpp
+               piper/utils/filesystem.cpp
+
+               piper/shaders/Shader.hpp
+               piper/shaders/Shader.cpp
+
+               ${PROJECT_SHADERS} ${PROJECT_CONFIGS}
+               ${VENDORS_SOURCES})
 target_link_libraries(${PROJECT_NAME} glfw
-                      ${GLFW_LIBRARIES} ${GLAD_LIBRARIES})
+                      ${GLFW_LIBRARIES} ${GLAD_LIBRARIES}
+                      eigen)
 set_target_properties(${PROJECT_NAME} PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${PROJECT_NAME})
+
+
+target_include_directories(${PROJECT_NAME} PUBLIC
+  piper/
+  vendor/glad/include/
+  vendor/glfw/include/
+  vendor/glm/
+  vendor/stb/)
