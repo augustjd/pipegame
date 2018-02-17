@@ -54,6 +54,8 @@ add_executable(${PROJECT_NAME}
 
                piper/Entity.hpp
                piper/Entity.cpp
+               piper/MeshEntity.hpp
+               piper/MeshEntity.cpp
 
                piper/Camera.hpp
                piper/Camera.cpp

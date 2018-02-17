@@ -6,5 +6,5 @@
 
 class MeshLoader {
 public:
-  std::unique_ptr<Mesh> load(const path& path, bool debug = false);
+  std::shared_ptr<Mesh> load(const path& path, bool debug = false);
 };

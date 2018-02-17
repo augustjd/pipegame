@@ -1,11 +1,14 @@
 #pragma once
 
+#include <iostream>
+
 #include "glitter.hpp"
 
 #include "utils/optional.hpp"
 
 
 class Camera;
+class Pose;
 
 
 class OpenGLResource {
@@ -70,12 +73,14 @@ public:
   virtual ~ShaderProgram() = default;
 
   virtual void set_camera(const Camera& camera);
+  virtual void set_model(const Pose& pose);
 
 protected:
   template <typename T>
   bool set_uniform(const std::string& key, const T& value) {
     auto location = glGetUniformLocation(*this, key.c_str());
     if (location == GL_INVALID_VALUE) {
+      std::cerr << "Failed to set uniform \"" << key << "\"" << std::endl;
       return false;
     }
 

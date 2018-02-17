@@ -1,6 +1,10 @@
 #pragma once
 
+#include <memory>
+
 #include <Eigen/Geometry>
+
+#include "shaders/Shader.hpp"
 
 
 class Pose {
@@ -31,11 +35,18 @@ private:
 
 class Entity {
 public:
-  Entity();
-  Entity(const Pose& pose);
+  Entity(const Pose& pose = Pose(),
+         std::shared_ptr<ShaderProgram> program = nullptr);
+
+  virtual ~Entity() = default;
 
   const Pose& pose() const;
 
+  ShaderProgram* program();
+
+  virtual void draw() {};
+
 private:
   Pose _pose;
+  std::shared_ptr<ShaderProgram> _program;
 };

@@ -21,7 +21,7 @@ public:
   Camera();
   Camera(const Lens& lens);
 
-  void draw(ShaderProgram* program, const Mesh& mesh);
+  void draw(Entity& entity);
 
   const Lens& lens() const;
 

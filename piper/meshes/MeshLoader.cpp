@@ -37,7 +37,7 @@ Eigen::Vector3f vector3f_from_line(const std::vector<std::string>& splits) {
 }
 
 
-std::unique_ptr<Mesh> MeshLoader::load(const path& path, bool debug) {
+std::shared_ptr<Mesh> MeshLoader::load(const path& path, bool debug) {
   aligned_vector<Eigen::Vector3f> positions;
   aligned_vector<Eigen::Vector2f> texture_coordinates;
   aligned_vector<Eigen::Vector3f> normals;
@@ -94,7 +94,7 @@ std::unique_ptr<Mesh> MeshLoader::load(const path& path, bool debug) {
     return nullptr;
   }
 
-  return std::make_unique<Mesh>(std::move(positions),
+  return std::make_shared<Mesh>(std::move(positions),
                                 std::move(texture_coordinates),
                                 std::move(normals),
                                 std::move(indices));

@@ -7,6 +7,7 @@
 
 #include "Camera.hpp"
 #include "meshes/MeshLoader.hpp"
+#include "MeshEntity.hpp"
 #include "shaders/Shader.hpp"
 #include "utils/filesystem.hpp"
 
@@ -41,6 +42,8 @@ int main() {
     path cube_filepath = "./models/cube.obj";
     auto cube = mesh_loader.load(cube_filepath);
 
+    MeshEntity entity(cube, std::make_shared<ShaderProgram>(program));
+
     if (cube == nullptr) {
       std::cout << "Failed to load " << cube_filepath << std::endl;
       return 1;
@@ -57,7 +60,7 @@ int main() {
         glClearColor(0.25f, 0.25f, 0.25f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        camera.draw(&program, *cube);
+        camera.draw(entity);
 
         // Flip Buffers and Draw
         glfwSwapBuffers(window);

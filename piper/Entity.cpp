@@ -19,6 +19,7 @@ Pose::Pose(const Eigen::Vector4f& position,
 
 void Pose::update_matrix() {
   // TODO: position and orient matrix.
+  _matrix = Eigen::Matrix4f::Identity();
 }
 
 
@@ -43,15 +44,16 @@ const Eigen::Matrix4f& Pose::matrix() const {
 }
 
 
-Entity::Entity()
-  : _pose()
+Entity::Entity(const Pose& pose,
+               std::shared_ptr<ShaderProgram> program)
+  : _pose(pose),
+  _program(program)
 {
 }
 
 
-Entity::Entity(const Pose& pose)
-  : _pose(pose)
-{
+ShaderProgram* Entity::program() {
+  return _program.get();
 }
 
 
