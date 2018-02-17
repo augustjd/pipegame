@@ -5,6 +5,9 @@
 #include "utils/optional.hpp"
 
 
+class Camera;
+
+
 class OpenGLResource {
 public:
   OpenGLResource(GLint id)
@@ -62,5 +65,21 @@ public:
   ShaderProgram(GLint id)
     : OpenGLResource(id)
   {
+  }
+
+  virtual ~ShaderProgram() = default;
+
+  virtual void set_camera(const Camera& camera);
+
+protected:
+  template <typename T>
+  bool set_uniform(const std::string& key, const T& value) {
+    auto location = glGetUniformLocation(*this, key.c_str());
+    if (location == GL_INVALID_VALUE) {
+      return false;
+    }
+
+    glUniform(location, value);
+    return true;
   }
 };

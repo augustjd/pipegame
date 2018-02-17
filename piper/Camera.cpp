@@ -8,6 +8,11 @@ Lens::Lens()
 }
 
 
+const Eigen::Matrix4f Lens::matrix() const {
+  return _projection;
+}
+
+
 Camera::Camera()
   : _lens()
 {
@@ -20,7 +25,10 @@ Camera::Camera(const Lens& lens)
 }
 
 
-void Camera::draw(const Mesh& mesh) {
+void Camera::draw(ShaderProgram* program, const Mesh& mesh) {
+  glUseProgram(*program);
+  program->set_camera(*this);
+
   glBindVertexArray(mesh.vertex_array());
   glEnableVertexAttribArray(0);
   glEnableVertexAttribArray(1);
@@ -33,4 +41,9 @@ void Camera::draw(const Mesh& mesh) {
   glDisableVertexAttribArray(2);
   glBindVertexArray(0);
   glBindTexture(GL_TEXTURE_2D, 0);
+  glUseProgram(0);
+}
+
+const Lens& Camera::lens() const {
+  return _lens;
 }

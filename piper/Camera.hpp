@@ -2,13 +2,14 @@
 
 #include "Entity.hpp"
 #include "meshes/Mesh.hpp"
+#include "shaders/Shader.hpp"
 
 
 class Lens {
 public:
   Lens();
 
-  Eigen::Matrix4f matrix();
+  const Eigen::Matrix4f matrix() const;
 
 private:
   Eigen::Matrix4f _projection;
@@ -20,7 +21,9 @@ public:
   Camera();
   Camera(const Lens& lens);
 
-  void draw(const Mesh& mesh);
+  void draw(ShaderProgram* program, const Mesh& mesh);
+
+  const Lens& lens() const;
 
 private:
   Lens _lens;

@@ -37,7 +37,7 @@ Eigen::Vector3f vector3f_from_line(const std::vector<std::string>& splits) {
 }
 
 
-std::unique_ptr<Mesh> MeshLoader::load(const path& path) {
+std::unique_ptr<Mesh> MeshLoader::load(const path& path, bool debug) {
   aligned_vector<Eigen::Vector3f> positions;
   aligned_vector<Eigen::Vector2f> texture_coordinates;
   aligned_vector<Eigen::Vector3f> normals;
@@ -60,13 +60,19 @@ std::unique_ptr<Mesh> MeshLoader::load(const path& path) {
 
       if (type == "v") {
         positions.emplace_back(vector3f_from_line(parts));
-        printf("Line %02d: v %f %f %f\n", i, positions.back().x(), positions.back().y(), positions.back().z());
+        if (debug) {
+          printf("Line %02zu: v %f %f %f\n", i, positions.back().x(), positions.back().y(), positions.back().z());
+        }
       } else if (type == "vn") {
         normals.emplace_back(vector3f_from_line(parts));
-        printf("Line %02d: vn %f %f %f\n", i, normals.back().x(), normals.back().y(), normals.back().z());
+        if (debug) {
+          printf("Line %02zu: vn %f %f %f\n", i, normals.back().x(), normals.back().y(), normals.back().z());
+        }
       } else if (type == "vt") {
         texture_coordinates.emplace_back(vector2f_from_line(parts));
-        printf("Line %02d: vt %f %f\n", i, texture_coordinates.back().x(), texture_coordinates.back().y());
+        if (debug) {
+          printf("Line %02zu: vt %f %f\n", i, texture_coordinates.back().x(), texture_coordinates.back().y());
+        }
       } else if (type == "f") {
         Eigen::Vector3i face;
         for (size_t i = 1; i < 4; ++i) {
@@ -75,9 +81,13 @@ std::unique_ptr<Mesh> MeshLoader::load(const path& path) {
           face(i - 1) = index;
         }
         indices.emplace_back(face);
-        printf("Line %02d: f %d %d %d\n", i, face.x(), face.y(), face.z());
+        if (debug) {
+          printf("Line %02zu: f %d %d %d\n", i, face.x(), face.y(), face.z());
+        }
       } else {
-        printf("Line %02d: Skipped '%s'\n", i, line.c_str());
+        if (debug) {
+          printf("Line %02zu: Skipped '%s'\n", i, line.c_str());
+        }
       }
     }
   } catch (...) {

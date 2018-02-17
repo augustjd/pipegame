@@ -1,5 +1,7 @@
 #include "shaders/Shader.hpp"
 
+#include "Camera.hpp"
+
 
 nonstd::optional<GLint> Shader::compile(const std::string& src, GLenum type) {
   const char* source = src.c_str();
@@ -66,4 +68,10 @@ nonstd::optional<ShaderProgram> ShaderProgram::link(const VertexShader& vertex, 
   }
 
   return {program};
+}
+
+
+void ShaderProgram::set_camera(const Camera& camera) {
+  set_uniform("projectionMatrix", camera.lens().matrix());
+  set_uniform("viewMatrix", camera.pose().matrix());
 }

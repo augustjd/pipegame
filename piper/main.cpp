@@ -57,11 +57,7 @@ int main() {
         glClearColor(0.25f, 0.25f, 0.25f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        glUseProgram(program);
-
-        camera.draw(*cube);
-
-        glUseProgram(0);
+        camera.draw(&program, *cube);
 
         // Flip Buffers and Draw
         glfwSwapBuffers(window);
