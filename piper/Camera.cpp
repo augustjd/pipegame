@@ -2,6 +2,17 @@
 
 #include "glitter.hpp"
 
+Lens::Lens()
+  : _projection(Eigen::Matrix4f::Identity())
+{
+}
+
+
+Camera::Camera()
+  : _lens()
+{
+}
+
 
 Camera::Camera(const Lens& lens)
   : _lens(lens)

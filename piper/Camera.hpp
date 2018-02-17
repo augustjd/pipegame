@@ -6,6 +6,8 @@
 
 class Lens {
 public:
+  Lens();
+
   Eigen::Matrix4f matrix();
 
 private:
@@ -15,6 +17,7 @@ private:
 
 class Camera : public Entity {
 public:
+  Camera();
   Camera(const Lens& lens);
 
   void draw(const Mesh& mesh);

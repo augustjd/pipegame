@@ -1,8 +1,12 @@
 #include "glitter.hpp"
 
+#include <iostream>
+
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#include "Camera.hpp"
+#include "meshes/MeshLoader.hpp"
 #include "shaders/Shader.hpp"
 #include "utils/filesystem.hpp"
 
@@ -33,6 +37,17 @@ int main() {
 
     auto program = ShaderProgram::link(vertex, fragment).value();
 
+    MeshLoader mesh_loader;
+    path cube_filepath = "./models/cube.obj";
+    auto cube = mesh_loader.load(cube_filepath);
+
+    if (cube == nullptr) {
+      std::cout << "Failed to load " << cube_filepath << std::endl;
+      return 1;
+    }
+
+    Camera camera;
+
     // Rendering Loop
     while (glfwWindowShouldClose(window) == false) {
         if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
@@ -41,6 +56,12 @@ int main() {
         // Background Fill Color
         glClearColor(0.25f, 0.25f, 0.25f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
+
+        glUseProgram(program);
+
+        camera.draw(*cube);
+
+        glUseProgram(0);
 
         // Flip Buffers and Draw
         glfwSwapBuffers(window);
