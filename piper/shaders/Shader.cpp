@@ -72,13 +72,10 @@ nonstd::optional<ShaderProgram> ShaderProgram::link(const VertexShader& vertex, 
 
 
 void ShaderProgram::set_camera(const Camera& camera) {
-  std::cout << "setting projection to:" << std::endl << camera.lens().matrix() << std::endl << std::endl;
   set_uniform("projectionMatrix", camera.lens().matrix());
-  std::cout << "setting view to:" << std::endl << camera.pose().matrix() << std::endl << std::endl;
   set_uniform("viewMatrix", camera.pose().matrix());
 }
 
 void ShaderProgram::set_model(const Pose& pose) {
-  std::cout << "setting model to:" << std::endl << pose.matrix() << std::endl << std::endl;
   set_uniform("modelMatrix", pose.matrix());
 }

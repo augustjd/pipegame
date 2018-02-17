@@ -19,9 +19,11 @@ public:
 
   const Eigen::Matrix4f& matrix() const;
 
+  void move(const Eigen::Vector4f& translation);
+
   static Pose LookAt(const Eigen::Vector3f& eye,
                      const Eigen::Vector3f& target,
-                     const Eigen::Vector3f& up);
+                     const Eigen::Vector3f& up = Eigen::Vector3f::UnitY());
 
 private:
   void update_matrix();
@@ -41,6 +43,8 @@ public:
   virtual ~Entity() = default;
 
   const Pose& pose() const;
+
+  void move(const Eigen::Vector4f& translation);
 
   ShaderProgram* program();
 

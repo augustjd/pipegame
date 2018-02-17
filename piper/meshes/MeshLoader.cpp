@@ -77,7 +77,7 @@ std::shared_ptr<Mesh> MeshLoader::load(const path& path, bool debug) {
         Eigen::Vector3i face;
         for (size_t i = 1; i < 4; ++i) {
           std::vector<std::string> vertex_parts = split(parts.at(i), "/", true);
-          int index = std::stoi(vertex_parts.front()); // only vertex matters;
+          int index = std::stoi(vertex_parts.front()) - 1; // only vertex matters, .obj is 1-indexed so subtract 1 for OpenGL
           face(i - 1) = index;
         }
         indices.emplace_back(face);

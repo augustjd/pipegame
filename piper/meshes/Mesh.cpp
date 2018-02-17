@@ -1,5 +1,7 @@
 #include "meshes/Mesh.hpp"
 
+#include <iostream>
+
 
 Mesh::Mesh(aligned_vector<Eigen::Vector3f>&& positions,
        aligned_vector<Eigen::Vector2f>&& texture_coordinates,
@@ -11,10 +13,23 @@ Mesh::Mesh(aligned_vector<Eigen::Vector3f>&& positions,
   _indices(std::move(indices))
 {
   update_geometry();
+
+  std::cout << "Printing faces:" << std::endl;
+  for (const auto& face : _indices) {
+    std::cout << "Face:" << _positions.at(face(0)).transpose() << "->" << _positions.at(face(1)).transpose() << "->" << _positions.at(face(2)).transpose() << std::endl;
+  }
 }
 
 
 void Mesh::update_geometry() {
+  while (_texture_coordinates.size() < _positions.size()) {
+    _texture_coordinates.emplace_back(Eigen::Vector2f::Zero());
+  }
+
+  while (_normals.size() < _positions.size()) {
+    _normals.emplace_back(Eigen::Vector3f::Zero());
+  }
+
   glGenVertexArrays(1, &_vao);
   glBindVertexArray(_vao);
 

@@ -13,19 +13,15 @@ const Eigen::Matrix4f Lens::matrix() const {
 }
 
 
-Camera::Camera()
-  : _lens()
+Camera::Camera(const Pose& pose,
+               const Lens& lens)
+  : Entity(pose),
+  _lens(lens)
 {
 }
 
 
-Camera::Camera(const Lens& lens)
-  : _lens(lens)
-{
-}
-
-
-void Camera::draw(Entity& entity) {
+void Camera::render(Entity& entity) {
   auto program = entity.program();
   if (!program) {
     return; // cannot be drawn.

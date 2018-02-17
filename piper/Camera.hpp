@@ -18,10 +18,10 @@ private:
 
 class Camera : public Entity {
 public:
-  Camera();
-  Camera(const Lens& lens);
+  Camera(const Pose& pose = Pose(),
+         const Lens& lens = Lens());
 
-  void draw(Entity& entity);
+  void render(Entity& entity);
 
   const Lens& lens() const;
 

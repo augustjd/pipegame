@@ -1,8 +1,11 @@
 #include "Entity.hpp"
 
+#include <Eigen/Geometry>
+
+
 Pose::Pose()
   : _position(Eigen::Vector4f::Zero()),
-  _orientation(Eigen::AngleAxisf(0,  Eigen::Vector3f::UnitY()))
+  _orientation(Eigen::AngleAxisf(0,  -Eigen::Vector3f::UnitY()))
 {
   update_matrix();
 }
@@ -18,8 +21,7 @@ Pose::Pose(const Eigen::Vector4f& position,
 
 
 void Pose::update_matrix() {
-  // TODO: position and orient matrix.
-  _matrix = Eigen::Matrix4f::Identity();
+  _matrix = (Eigen::Translation3f(_position.topRows<3>()) * _orientation).matrix();
 }
 
 
@@ -36,6 +38,14 @@ Pose Pose::LookAt(const Eigen::Vector3f& eye,
   rotation.col(2) = z;
 
   return { eye.homogeneous(), Eigen::Quaternionf(rotation) };
+}
+
+
+void Pose::move(const Eigen::Vector4f& translation) {
+  _position += translation;
+  std::cout << "new position: " << _position.transpose() << std::endl;
+  update_matrix();
+  std::cout << "new matrix: " << std::endl << matrix() << std::endl << std::endl;
 }
 
 
@@ -59,4 +69,9 @@ ShaderProgram* Entity::program() {
 
 const Pose& Entity::pose() const { 
   return _pose; 
+}
+
+
+void Entity::move(const Eigen::Vector4f& translation) {
+  _pose.move(translation);
 }
