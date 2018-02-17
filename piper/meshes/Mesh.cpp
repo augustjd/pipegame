@@ -10,6 +10,7 @@ Mesh::Mesh(aligned_vector<Eigen::Vector3f>&& positions,
   _normals(std::move(normals)),
   _indices(std::move(indices))
 {
+  update_geometry();
 }
 
 
@@ -45,4 +46,14 @@ void Mesh::update_geometry() {
 void Mesh::recreate_buffer(GLuint* buffer) {
   glDeleteBuffers(1, buffer);
   glGenBuffers(1, buffer);
+}
+
+
+const aligned_vector<Eigen::Vector3f>& Mesh::vertices() const {
+  return _positions;
+}
+
+
+GLuint Mesh::vertex_array() const {
+  return _vao;
 }

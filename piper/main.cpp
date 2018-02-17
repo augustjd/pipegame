@@ -3,9 +3,6 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-#include <cstdio>
-#include <cstdlib>
-
 #include "shaders/Shader.hpp"
 #include "utils/filesystem.hpp"
 
@@ -31,8 +28,8 @@ int main() {
     fprintf(stderr, "OpenGL %s\n", glGetString(GL_VERSION));
 
 
-    auto vertex = VertexShader::compile(*load_file_to_string("./shaders/vertex.vs")).value();
-    auto fragment = FragmentShader::compile(*load_file_to_string("./shaders/fragment.fs")).value();
+    auto vertex = *VertexShader::compile(*load_file_to_string("./shaders/vertex.vs"));
+    auto fragment = *FragmentShader::compile(*load_file_to_string("./shaders/fragment.fs"));
 
     auto program = ShaderProgram::link(vertex, fragment).value();
 

@@ -15,9 +15,17 @@ public:
 
   const Eigen::Matrix4f& matrix() const;
 
+  static Pose LookAt(const Eigen::Vector3f& eye,
+                     const Eigen::Vector3f& target,
+                     const Eigen::Vector3f& up);
+
 private:
+  void update_matrix();
+
   Eigen::Vector4f _position;
   Eigen::Quaternionf _orientation;
+
+  Eigen::Matrix4f _matrix;
 };
 
 

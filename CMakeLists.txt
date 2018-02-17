@@ -53,6 +53,9 @@ add_executable(${PROJECT_NAME}
                piper/Entity.hpp
                piper/Entity.cpp
 
+               piper/Camera.hpp
+               piper/Camera.cpp
+
                ${PROJECT_SHADERS} ${PROJECT_CONFIGS}
                ${VENDORS_SOURCES})
 target_link_libraries(${PROJECT_NAME} glfw

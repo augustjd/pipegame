@@ -14,6 +14,9 @@ public:
        aligned_vector<Eigen::Vector3f>&& normals,
        aligned_vector<Eigen::Vector3i>&& indices);
 
+  GLuint vertex_array() const;
+  const aligned_vector<Eigen::Vector3f>& vertices() const;
+
 private:
   void update_geometry();
   void recreate_buffer(GLuint* buffer);
