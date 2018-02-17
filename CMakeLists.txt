@@ -50,6 +50,9 @@ add_executable(${PROJECT_NAME}
                piper/meshes/Mesh.hpp
                piper/meshes/Mesh.cpp
 
+               piper/Entity.hpp
+               piper/Entity.cpp
+
                ${PROJECT_SHADERS} ${PROJECT_CONFIGS}
                ${VENDORS_SOURCES})
 target_link_libraries(${PROJECT_NAME} glfw
