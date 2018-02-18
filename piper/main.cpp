@@ -51,7 +51,10 @@ int main(int argc, const char* argv[]) {
     return 1;
   }
 
-  Camera camera(Pose::LookAt(Eigen::Vector3f(0, 0, 0), -Eigen::Vector3f::UnitZ()));
+  auto lens = Lens::Perspective(mWidth / mHeight, 60*3.14159265/180, 1e-4, 1000.0f);
+  std::cout << "Lens matrix:" << std::endl << lens.matrix() << std::endl << std::endl;
+  Camera camera;
+  std::cout << "Camera view matrix:" << std::endl << camera.pose().matrix() << std::endl << std::endl;
 
   int width, height;
   glfwGetFramebufferSize(window, &width, &height);
