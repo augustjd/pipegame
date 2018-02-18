@@ -95,7 +95,7 @@ int omain(int argc, const char* argv[]) {
     return 1;
   }
 
-  auto lens = Lens::Perspective(mWidth / mHeight, 90, 1e-4, 1000.0f);
+  auto lens = Lens::Perspective(((float)mWidth) / mHeight, 90, 1e-4, 1000.0f);
   std::cout << "Lens matrix:" << std::endl << lens.matrix() << std::endl << std::endl;
   auto pose = Pose::LookAt(Eigen::Vector3f(8, 8, 8), Eigen::Vector3f::Zero());
   Camera camera = {pose, lens};
