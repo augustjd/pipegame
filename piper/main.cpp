@@ -12,7 +12,7 @@
 #include "utils/filesystem.hpp"
 
 
-int main() {
+int main(int argc, const char* argv[]) {
   glfwInit();
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
@@ -33,19 +33,21 @@ int main() {
   fprintf(stderr, "OpenGL %s\n", glGetString(GL_VERSION));
 
 
+  auto model_filepath = path(argc > 1 ? argv[1] : "./models/bunny.obj");
+
   auto vertex = *VertexShader::compile(*load_file_to_string("./shaders/vertex.vs"));
-  auto fragment = *FragmentShader::compile(*load_file_to_string("./shaders/simplefrag.fs"));
+  auto fragment = *FragmentShader::compile(*load_file_to_string("./shaders/fragment.fs"));
 
   auto program = ShaderProgram::link(vertex, fragment).value();
 
   MeshLoader mesh_loader;
-  path cube_filepath = "./models/cube2.obj";
-  auto cube = mesh_loader.load(cube_filepath, true);
+  bool debug_load_model = false;
+  auto model = mesh_loader.load(model_filepath, debug_load_model);
 
-  MeshEntity entity(cube, std::make_shared<ShaderProgram>(program));
+  MeshEntity entity(model, std::make_shared<ShaderProgram>(program));
 
-  if (cube == nullptr) {
-    std::cout << "Failed to load " << cube_filepath << std::endl;
+  if (model == nullptr) {
+    std::cout << "Failed to load " << model_filepath << std::endl;
     return 1;
   }
 
@@ -55,7 +57,7 @@ int main() {
   glfwGetFramebufferSize(window, &width, &height);
   glViewport(0, 0, width, height);
 
-  float speed = 1e-3;
+  float speed = 1e-2;
   // Rendering Loop
   while (glfwWindowShouldClose(window) == false) {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
@@ -68,10 +70,10 @@ int main() {
       camera.move(-speed * Eigen::Vector4f::UnitX());
     }
     if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
-      camera.move(speed * Eigen::Vector4f::UnitY());
+      camera.move(-speed * Eigen::Vector4f::UnitY());
     } 
     if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
-      camera.move(-speed * Eigen::Vector4f::UnitY());
+      camera.move(speed * Eigen::Vector4f::UnitY());
     }
 
     // Background Fill Color

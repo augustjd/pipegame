@@ -13,11 +13,6 @@ Mesh::Mesh(aligned_vector<Eigen::Vector3f>&& positions,
   _indices(std::move(indices))
 {
   update_geometry();
-
-  std::cout << "Printing faces:" << std::endl;
-  for (const auto& face : _indices) {
-    std::cout << "Face:" << _positions.at(face(0)).transpose() << "->" << _positions.at(face(1)).transpose() << "->" << _positions.at(face(2)).transpose() << std::endl;
-  }
 }
 
 

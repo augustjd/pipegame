@@ -5,7 +5,7 @@
 
 Pose::Pose()
   : _position(Eigen::Vector4f::Zero()),
-  _orientation(Eigen::AngleAxisf(0,  -Eigen::Vector3f::UnitY()))
+  _orientation(0, 0, 0, 1)
 {
   update_matrix();
 }
@@ -22,6 +22,7 @@ Pose::Pose(const Eigen::Vector4f& position,
 
 void Pose::update_matrix() {
   _matrix = (Eigen::Translation3f(_position.topRows<3>()) * _orientation).matrix();
+  //_matrix.setIdentity();
 }
 
 
