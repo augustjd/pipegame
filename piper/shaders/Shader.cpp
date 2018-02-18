@@ -73,9 +73,9 @@ nonstd::optional<ShaderProgram> ShaderProgram::link(const VertexShader& vertex, 
 
 void ShaderProgram::set_camera(const Camera& camera) {
   set_uniform("projectionMatrix", camera.lens().matrix());
-  set_uniform("viewMatrix", camera.pose().matrix());
+  set_uniform("viewMatrix", camera.pose().global_to_local());
 }
 
 void ShaderProgram::set_model(const Pose& pose) {
-  set_uniform("modelMatrix", pose.matrix());
+  set_uniform("modelMatrix", pose.global_to_local());
 }

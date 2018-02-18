@@ -22,7 +22,6 @@ Pose::Pose(const Eigen::Vector4f& position,
 
 void Pose::update_matrix() {
   _matrix = (Eigen::Translation3f(_position.topRows<3>()) * _orientation).matrix();
-  //_matrix.setIdentity();
 }
 
 
@@ -46,11 +45,11 @@ void Pose::move(const Eigen::Vector4f& translation) {
   _position += translation;
   std::cout << "new position: " << _position.transpose() << std::endl;
   update_matrix();
-  std::cout << "new matrix: " << std::endl << matrix() << std::endl << std::endl;
+  std::cout << "new matrix: " << std::endl << global_to_local() << std::endl << std::endl;
 }
 
 
-const Eigen::Matrix4f& Pose::matrix() const {
+const Eigen::Matrix4f& Pose::global_to_local() const {
   return _matrix;
 }
 

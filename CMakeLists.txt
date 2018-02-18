@@ -51,6 +51,8 @@ add_executable(${PROJECT_NAME}
                piper/meshes/Mesh.cpp
                piper/meshes/MeshLoader.hpp
                piper/meshes/MeshLoader.cpp
+               piper/meshes/Triangle.hpp
+               piper/meshes/Triangle.cpp
 
                piper/Entity.hpp
                piper/Entity.cpp

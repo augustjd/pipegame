@@ -13,7 +13,7 @@ public:
   const Eigen::Matrix4f matrix() const;
 
   static Lens Orthographic(float left, float right, float top, float bottom, float near, float far);
-  static Lens Perspective(float aspect, float near, float far, float fovy);
+  static Lens Perspective(float aspect, float fovy_deg, float near, float far);
 
 private:
   Eigen::Matrix4f _projection;

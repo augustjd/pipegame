@@ -32,16 +32,22 @@ Lens Lens::Orthographic(float left, float right, float top, float bottom, float 
 }
 
 
-Lens Lens::Perspective(float aspect, float near, float far, float fovy) {
-  Eigen::Matrix4f matrix;
-  float yScale = 1.0f / std::tan(fovy * 0.5F);
-  float xScale = yScale / aspect;
+Lens Lens::Perspective(float aspect, float fovy_deg, float zNear, float zFar) {
+    typedef Eigen::Matrix4f Matrix4;
 
-  matrix << xScale, 0, 0, 0,
-       0, yScale, 0, 0,
-       0, 0, -(far+near)/(far-near), -1,
-       0, 0, -2*near*far/(far-near), 0;
-  return {matrix};
+    assert(aspect > 0);
+    assert(zFar > zNear);
+
+    double radf = M_PI / 180.0f * fovy_deg;
+
+    double tanHalfFovy = tan(radf / 2.0);
+    Matrix4 res = Matrix4::Zero();
+    res(0,0) = 1.0 / (aspect * tanHalfFovy);
+    res(1,1) = 1.0 / (tanHalfFovy);
+    res(2,2) = - (zFar + zNear) / (zFar - zNear);
+    res(3,2) = - 1.0;
+    res(2,3) = - (2.0 * zFar * zNear) / (zFar - zNear);
+    return {res};
 }
 
 

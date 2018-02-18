@@ -17,7 +17,7 @@ public:
   const Eigen::Vector4f& position() const;
   const Eigen::Quaternionf& orientation() const;
 
-  const Eigen::Matrix4f& matrix() const;
+  const Eigen::Matrix4f& global_to_local() const;
 
   void move(const Eigen::Vector4f& translation);
 
