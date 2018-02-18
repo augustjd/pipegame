@@ -11,17 +11,16 @@ class Pose {
 public:
   Pose();
 
-  Pose(const Eigen::Vector4f& position,
+  Pose(const Eigen::Vector3f& position,
        const Eigen::Quaternionf& orientation);
-
-  Pose(const Eigen::Matrix4f& transform);
 
   const Eigen::Vector4f& position() const;
   const Eigen::Quaternionf& orientation() const;
 
   const Eigen::Matrix4f& global_to_local() const;
+  const Eigen::Matrix4f& local_to_global() const;
 
-  void move(const Eigen::Vector4f& translation);
+  void move(const Eigen::Vector3f& translation);
 
   static Pose LookAt(const Eigen::Vector3f& eye,
                      const Eigen::Vector3f& target,
@@ -30,10 +29,11 @@ public:
 private:
   void update_matrix();
 
-  Eigen::Vector4f _position;
+  Eigen::Vector3f _position;
   Eigen::Quaternionf _orientation;
 
   Eigen::Matrix4f _matrix;
+  Eigen::Matrix4f _inverse_matrix;
 };
 
 
@@ -46,7 +46,7 @@ public:
 
   const Pose& pose() const;
 
-  void move(const Eigen::Vector4f& translation);
+  void move(const Eigen::Vector3f& translation);
 
   ShaderProgram* program();
 

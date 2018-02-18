@@ -75,16 +75,16 @@ int omain(int argc, const char* argv[]) {
   auto program_shared = std::make_shared<ShaderProgram>(program);
   std::vector<std::shared_ptr<Entity>> entities;
   for(int i = 0; i <= 50; ++i) {
-    auto zentity = std::make_shared<MeshEntity>(std::make_shared<Triangle>(1.0f, 0.0f), program_shared);
-    zentity->move(Eigen::Vector4f::UnitZ() * i);
+    auto zentity = std::make_shared<MeshEntity>(std::make_shared<Triangle>(1.5f, 0.0f), program_shared);
+    zentity->move(Eigen::Vector3f::UnitZ() * i);
     entities.emplace_back(zentity);
 
-    auto yentity = std::make_shared<MeshEntity>(std::make_shared<Triangle>(1.0f, 0.0f), program_shared);
-    yentity->move(Eigen::Vector4f::UnitY() * i);
+    auto yentity = std::make_shared<MeshEntity>(std::make_shared<Triangle>(0.5f, 0.0f), program_shared);
+    yentity->move(Eigen::Vector3f::UnitY() * i);
     entities.emplace_back(yentity);
 
     auto xentity = std::make_shared<MeshEntity>(std::make_shared<Triangle>(1.0f, 0.0f), program_shared);
-    xentity->move(Eigen::Vector4f::UnitX() * i);
+    xentity->move(Eigen::Vector3f::UnitX() * i);
     entities.emplace_back(xentity);
   }
 
@@ -112,23 +112,23 @@ int omain(int argc, const char* argv[]) {
       glfwSetWindowShouldClose(window, true);
     } 
     if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
-      camera.move(speed * Eigen::Vector4f::UnitX());
+      camera.move(-speed * Eigen::Vector3f::UnitX());
     } 
     if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
-      camera.move(-speed * Eigen::Vector4f::UnitX());
+      camera.move(speed * Eigen::Vector3f::UnitX());
     }
     if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
       if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
-        camera.move(speed * Eigen::Vector4f::UnitZ());
+        camera.move(speed * Eigen::Vector3f::UnitZ());
       } else {
-        camera.move(speed * Eigen::Vector4f::UnitY());
+        camera.move(speed * Eigen::Vector3f::UnitY());
       }
     } 
     if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
       if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
-        camera.move(-speed * Eigen::Vector4f::UnitZ());
+        camera.move(-speed * Eigen::Vector3f::UnitZ());
       } else {
-        camera.move(-speed * Eigen::Vector4f::UnitY());
+        camera.move(-speed * Eigen::Vector3f::UnitY());
       }
     }
 

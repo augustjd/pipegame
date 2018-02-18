@@ -77,5 +77,5 @@ void ShaderProgram::set_camera(const Camera& camera) {
 }
 
 void ShaderProgram::set_model(const Pose& pose) {
-  set_uniform("modelMatrix", pose.global_to_local());
+  set_uniform("modelMatrix", pose.local_to_global());
 }
