@@ -44,7 +44,7 @@ int main(int argc, const char* argv[]) {
   auto program = ShaderProgram::link(vertex, fragment).value();
 
   MeshLoader mesh_loader;
-  bool debug_load_model = true;
+  bool debug_load_model = false;
   auto model_loaded = mesh_loader.load(model_filepath, debug_load_model);
 
   auto program_shared = std::make_shared<ShaderProgram>(program);
@@ -106,6 +106,8 @@ int main(int argc, const char* argv[]) {
         camera.move(-speed * Eigen::Vector3f::UnitY());
       }
     }
+
+    std::cout << "Camera position:" << camera.pose().position().transpose() << std::endl;
 
     // Background Fill Color
     glClearColor(0.25f, 0.25f, 0.25f, 1.0f);

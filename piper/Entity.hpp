@@ -14,7 +14,7 @@ public:
   Pose(const Eigen::Vector3f& position,
        const Eigen::Quaternionf& orientation);
 
-  const Eigen::Vector4f& position() const;
+  const Eigen::Vector3f& position() const;
   const Eigen::Quaternionf& orientation() const;
 
   const Eigen::Matrix4f& global_to_local() const;

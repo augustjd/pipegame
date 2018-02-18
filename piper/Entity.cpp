@@ -20,6 +20,16 @@ Pose::Pose(const Eigen::Vector3f& position,
 }
 
 
+const Eigen::Vector3f& Pose::position() const {
+  return _position;
+}
+
+
+const Eigen::Quaternionf& Pose::orientation() const {
+  return _orientation;
+}
+
+
 void Pose::update_matrix() {
   _matrix = (_orientation * Eigen::Translation3f(-_position)).matrix();
   _inverse_matrix = _matrix.inverse();
@@ -30,7 +40,7 @@ Pose Pose::LookAt(const Eigen::Vector3f& eye,
                   const Eigen::Vector3f& target,
                   const Eigen::Vector3f& up) {
   Eigen::Vector3f f = (target - eye).normalized();
-  Eigen::Vector3f s = (up.cross(f)).normalized();
+  Eigen::Vector3f s = (f.cross(up)).normalized();
   Eigen::Vector3f u = f.cross(s).normalized();
 
   Eigen::Matrix3f rotation;
