@@ -11,34 +11,9 @@
 #include "MeshEntity.hpp"
 #include "shaders/Shader.hpp"
 #include "utils/filesystem.hpp"
-int omain(int argc, const char* argv[]);
+
 
 int main(int argc, const char* argv[]) {
-  std::cout << "Testing look at." << std::endl;
-
-
-  std::cout << "Should be identity:" << std::endl;
-  auto pose = Pose::LookAt(Eigen::Vector3f::Zero(),
-                           -Eigen::Vector3f::UnitZ(),
-                           Eigen::Vector3f::UnitY());
-  std::cout << pose.global_to_local() << std::endl;
-
-  std::cout << "Should be identity with a -1 z transform:" << std::endl;
-  auto pose2 = Pose::LookAt(Eigen::Vector3f::UnitZ(),
-                           Eigen::Vector3f::Zero(),
-                           Eigen::Vector3f::UnitY());
-  std::cout << pose2.global_to_local() << std::endl;
-
-  std::cout << "Tilted on our side so that X is now the Y direction" << std::endl;
-  auto pose3 = Pose::LookAt(Eigen::Vector3f::Zero(),
-                            -Eigen::Vector3f::UnitZ(),
-                            Eigen::Vector3f::UnitX());
-  std::cout << pose3.global_to_local() << std::endl;
-
-  return omain(argc, argv);
-}
-
-int omain(int argc, const char* argv[]) {
   glfwInit();
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);

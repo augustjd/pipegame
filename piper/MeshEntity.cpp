@@ -17,7 +17,7 @@ void MeshEntity::draw() {
   glEnableVertexAttribArray(1);
   glEnableVertexAttribArray(2);
 
-  glDrawElements(GL_TRIANGLES, _mesh->vertices().size(), GL_UNSIGNED_INT, 0);
+  glDrawElements(GL_TRIANGLES, _mesh->indices().size() * 3, GL_UNSIGNED_INT, 0);
 
   glDisableVertexAttribArray(0);
   glDisableVertexAttribArray(1);

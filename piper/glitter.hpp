@@ -12,7 +12,7 @@
 #include <unsupported/Eigen/OpenGLSupport>
 
 template <typename T>
-using aligned_vector = std::vector<T, Eigen::aligned_allocator<T>>;
+using aligned_vector = std::vector<T>;
 
 // Reference: https://github.com/nothings/stb/blob/master/stb_image.h#L4
 // To use stb_image, add this in *one* C++ source file.

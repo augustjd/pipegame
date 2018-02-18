@@ -16,6 +16,7 @@ public:
 
   GLuint vertex_array() const;
   const aligned_vector<Eigen::Vector3f>& vertices() const;
+  const aligned_vector<Eigen::Vector3i>& indices() const;
 
 private:
   void update_geometry();

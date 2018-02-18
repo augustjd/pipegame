@@ -1,5 +1,6 @@
 #include "meshes/Mesh.hpp"
 
+#include <cassert>
 #include <iostream>
 
 
@@ -34,19 +35,19 @@ void Mesh::update_geometry() {
   recreate_buffer(&_index_vbo);
 
   glBindBuffer(GL_ARRAY_BUFFER, _position_vbo);
-  glBufferData(GL_ARRAY_BUFFER, _positions.size() * 12, _positions.data(), GL_STATIC_DRAW);
+  glBufferData(GL_ARRAY_BUFFER, _positions.size() * sizeof(Eigen::Vector3f), _positions.data(), GL_STATIC_DRAW);
   glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
 
   glBindBuffer(GL_ARRAY_BUFFER, _texture_coordinate_vbo);
-  glBufferData(GL_ARRAY_BUFFER, _texture_coordinates.size() * 8, _texture_coordinates.data(), GL_STATIC_DRAW);
+  glBufferData(GL_ARRAY_BUFFER, _texture_coordinates.size() * sizeof(Eigen::Vector2f), _texture_coordinates.data(), GL_STATIC_DRAW);
   glVertexAttribPointer(1, 2, GL_FLOAT, false, 0, 0);
 
   glBindBuffer(GL_ARRAY_BUFFER, _normal_vbo);
-  glBufferData(GL_ARRAY_BUFFER, _normals.size() * 12, _normals.data(), GL_STATIC_DRAW);
+  glBufferData(GL_ARRAY_BUFFER, _normals.size() * sizeof(Eigen::Vector3f), _normals.data(), GL_STATIC_DRAW);
   glVertexAttribPointer(2, 3, GL_FLOAT, false, 0, 0);
 
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _index_vbo);
-  glBufferData(GL_ELEMENT_ARRAY_BUFFER, _indices.size() * 12, _indices.data(), GL_STATIC_DRAW);
+  glBufferData(GL_ELEMENT_ARRAY_BUFFER, _indices.size() * sizeof(Eigen::Vector3i), _indices.data(), GL_STATIC_DRAW);
 
   glBindBuffer(GL_ARRAY_BUFFER, 0);
   glBindVertexArray(0);
@@ -61,6 +62,11 @@ void Mesh::recreate_buffer(GLuint* buffer) {
 
 const aligned_vector<Eigen::Vector3f>& Mesh::vertices() const {
   return _positions;
+}
+
+
+const aligned_vector<Eigen::Vector3i>& Mesh::indices() const {
+  return _indices;
 }
 
 
