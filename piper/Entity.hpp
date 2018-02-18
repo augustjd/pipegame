@@ -14,6 +14,8 @@ public:
   Pose(const Eigen::Vector4f& position,
        const Eigen::Quaternionf& orientation);
 
+  Pose(const Eigen::Matrix4f& transform);
+
   const Eigen::Vector4f& position() const;
   const Eigen::Quaternionf& orientation() const;
 

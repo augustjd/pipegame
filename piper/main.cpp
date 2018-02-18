@@ -11,9 +11,34 @@
 #include "MeshEntity.hpp"
 #include "shaders/Shader.hpp"
 #include "utils/filesystem.hpp"
-
+int omain(int argc, const char* argv[]);
 
 int main(int argc, const char* argv[]) {
+  std::cout << "Testing look at." << std::endl;
+
+
+  std::cout << "Should be identity:" << std::endl;
+  auto pose = Pose::LookAt(Eigen::Vector3f::Zero(),
+                           -Eigen::Vector3f::UnitZ(),
+                           Eigen::Vector3f::UnitY());
+  std::cout << pose.global_to_local() << std::endl;
+
+  std::cout << "Should be identity with a -1 z transform:" << std::endl;
+  auto pose2 = Pose::LookAt(Eigen::Vector3f::UnitZ(),
+                           Eigen::Vector3f::Zero(),
+                           Eigen::Vector3f::UnitY());
+  std::cout << pose2.global_to_local() << std::endl;
+
+  std::cout << "Tilted on our side so that X is now the Y direction" << std::endl;
+  auto pose3 = Pose::LookAt(Eigen::Vector3f::Zero(),
+                            -Eigen::Vector3f::UnitZ(),
+                            Eigen::Vector3f::UnitX());
+  std::cout << pose3.global_to_local() << std::endl;
+
+  return omain(argc, argv);
+}
+
+int omain(int argc, const char* argv[]) {
   glfwInit();
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
@@ -33,6 +58,8 @@ int main(int argc, const char* argv[]) {
   gladLoadGL();
   fprintf(stderr, "OpenGL %s\n", glGetString(GL_VERSION));
 
+  glEnable(GL_DEPTH_TEST);
+
 
   auto model_filepath = path(argc > 1 ? argv[1] : "./models/bunny.obj");
 
@@ -47,7 +74,7 @@ int main(int argc, const char* argv[]) {
 
   auto program_shared = std::make_shared<ShaderProgram>(program);
   std::vector<std::shared_ptr<Entity>> entities;
-  for(int i = -50; i <= 50; ++i) {
+  for(int i = 0; i <= 50; ++i) {
     auto zentity = std::make_shared<MeshEntity>(std::make_shared<Triangle>(1.0f, 0.0f), program_shared);
     zentity->move(Eigen::Vector4f::UnitZ() * i);
     entities.emplace_back(zentity);
@@ -70,7 +97,7 @@ int main(int argc, const char* argv[]) {
 
   auto lens = Lens::Perspective(mWidth / mHeight, 90, 1e-4, 1000.0f);
   std::cout << "Lens matrix:" << std::endl << lens.matrix() << std::endl << std::endl;
-  auto pose = Pose::LookAt(Eigen::Vector3f(8, 8, 8.0f), Eigen::Vector3f::Zero());
+  auto pose = Pose::LookAt(Eigen::Vector3f(8, 8, 8), Eigen::Vector3f::Zero());
   Camera camera = {pose, lens};
   std::cout << "Camera view matrix:" << std::endl << camera.pose().global_to_local() << std::endl << std::endl;
 
@@ -107,7 +134,7 @@ int main(int argc, const char* argv[]) {
 
     // Background Fill Color
     glClearColor(0.25f, 0.25f, 0.25f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     for (auto& entity : entities) {
       camera.render(*entity);
