@@ -17,3 +17,6 @@
 [submodule "vendor/eigen"]
 	path = vendor/eigen
 	url = https://github.com/eigenteam/eigen-git-mirror.git
+[submodule "vendor/googletest"]
+	path = vendor/googletest
+	url = https://github.com/google/googletest

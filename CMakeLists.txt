@@ -9,6 +9,10 @@ add_subdirectory(vendor/glfw)
 option(BUILD_TESTING OFF)
 add_subdirectory(vendor/eigen/)
 
+add_subdirectory(vendor/googletest)
+
+add_subdirectory(test)
+
 if(MSVC)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4")
 else()
