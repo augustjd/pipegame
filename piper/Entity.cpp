@@ -5,7 +5,7 @@
 
 Pose::Pose()
   : _position(Eigen::Vector3f::Zero()),
-  _orientation(0, 0, 0, 1)
+  _orientation(1, 0, 0, 0)
 {
   update_matrix();
 }
