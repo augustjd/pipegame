@@ -40,16 +40,15 @@ Pose Pose::LookAt(const Eigen::Vector3f& eye,
                   const Eigen::Vector3f& target,
                   const Eigen::Vector3f& up) {
   Eigen::Vector3f f = (target - eye).normalized();
-  Eigen::Vector3f s = (f.cross(up)).normalized();
-  Eigen::Vector3f u = f.cross(s).normalized();
+  Eigen::Vector3f s = f.cross(up).normalized();
+  Eigen::Vector3f u = s.cross(f).normalized();
 
   Eigen::Matrix3f rotation;
-  rotation.row(0) = -s;
+  rotation.row(0) = s;
   rotation.row(1) = u;
   rotation.row(2) = -f;
 
-  Eigen::Quaternionf r;
-  r = rotation;
+  Eigen::Quaternionf r(rotation);
 
   return {eye, r};
 }

@@ -76,6 +76,8 @@ int main(int argc, const char* argv[]) {
   Camera camera = {pose, lens};
   std::cout << "Camera view matrix:" << std::endl << camera.pose().global_to_local() << std::endl << std::endl;
 
+  std::cout << "Pose view matrix:" << std::endl << pose.global_to_local() << std::endl << std::endl;
+
   int width, height;
   glfwGetFramebufferSize(window, &width, &height);
   glViewport(0, 0, width, height);
