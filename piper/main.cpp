@@ -9,6 +9,7 @@
 #include "meshes/MeshLoader.hpp"
 #include "meshes/Triangle.hpp"
 #include "MeshEntity.hpp"
+#include "AxesEntity.hpp"
 #include "shaders/PointLightingShader.hpp"
 #include "utils/filesystem.hpp"
 
@@ -47,7 +48,8 @@ int main(int argc, const char* argv[]) {
 
   auto program_shared = std::make_shared<PointLightingShader>(program);
   std::vector<std::shared_ptr<Entity>> entities;
-  for(int i = 0; i <= 50; ++i) {
+  /*
+  for(int i = 1; i <= 50; ++i) {
     auto zentity = std::make_shared<MeshEntity>(std::make_shared<Triangle>(1.5f, 0.0f), program_shared);
     zentity->move(Eigen::Vector3f::UnitZ() * i);
     entities.emplace_back(zentity);
@@ -60,8 +62,10 @@ int main(int argc, const char* argv[]) {
     xentity->move(Eigen::Vector3f::UnitX() * i);
     entities.emplace_back(xentity);
   }
+  */
 
   entities.emplace_back(std::make_shared<MeshEntity>(model_loaded, program_shared));
+  entities.emplace_back(std::make_shared<AxesEntity>());
 
   if (model_loaded == nullptr) {
     std::cout << "Failed to load " << model_filepath << std::endl;
