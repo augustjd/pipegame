@@ -41,6 +41,11 @@ add_library(${PROJECT_NAME}_lib
   piper/shaders/Shader.hpp
   piper/shaders/Shader.cpp
 
+  piper/shaders/PointLightingShader.hpp
+  piper/shaders/PointLightingShader.cpp
+  piper/shaders/Uniform.hpp
+  piper/shaders/Uniform.cpp
+
   piper/meshes/Mesh.hpp
   piper/meshes/Mesh.cpp
   piper/meshes/MeshLoader.hpp
