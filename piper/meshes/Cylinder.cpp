@@ -30,9 +30,13 @@ Mesh Cylinder::calculate(float radius, float length, size_t radial_sections, siz
     }
   }
 
-  for (int i = 0; i < radial_sections; ++i) {
-    _indices.emplace_back(Eigen::Vector3i(i, (i+1) % radial_sections, i+radial_sections));
-    _indices.emplace_back(Eigen::Vector3i(radial_sections + i, radial_sections + ((i+1) % radial_sections), ((i+1) % radial_sections)));
+  for (int j = 0; j < length_sections - 1; ++j) {
+    auto offset = Eigen::Vector3i::Constant(j * radial_sections);
+
+    for (int i = 0; i < radial_sections; ++i) {
+      _indices.emplace_back(offset + Eigen::Vector3i(i, (i+1) % radial_sections, i+radial_sections));
+      _indices.emplace_back(offset + Eigen::Vector3i(radial_sections + i, radial_sections + ((i+1) % radial_sections), ((i+1) % radial_sections)));
+    }
   }
 
   return Mesh(std::move(_positions),

@@ -72,7 +72,7 @@ int main(int argc, const char* argv[]) {
   entities.emplace_back(mesh);
   entities.emplace_back(std::make_shared<AxesEntity>());
 
-  entities.emplace_back(std::make_shared<MeshEntity>(std::make_shared<Cylinder>(3.0f, 5.0f, 30, 2), program_shared));
+  entities.emplace_back(std::make_shared<MeshEntity>(std::make_shared<Cylinder>(3.0f, 5.0f, 30, 20), program_shared));
   if (model_loaded == nullptr) {
     std::cout << "Failed to load " << model_filepath << std::endl;
     return 1;
