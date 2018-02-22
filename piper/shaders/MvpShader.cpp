@@ -37,3 +37,8 @@ void MvpShader::set_model(const Pose& pose) {
 void MvpShader::set_color(const Eigen::Vector3f& color) {
   _color.set(color.homogeneous());
 }
+
+
+void MvpShader::set_color_alpha(const Eigen::Vector4f& color) {
+  _color.set(color);
+}

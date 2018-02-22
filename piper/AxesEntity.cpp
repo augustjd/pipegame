@@ -3,7 +3,7 @@
 #include <cassert>
 
 
-AxesEntity::AxesEntity()
+AxesEntity::AxesEntity(float radius, size_t subdivisions)
   : Entity(Pose(),
            std::make_shared<MvpShader>(MvpShader::load().value()))
 {
@@ -14,12 +14,34 @@ AxesEntity::AxesEntity()
 
   _positions = {
     Eigen::Vector3f::Zero(),
-    10 * Eigen::Vector3f::UnitX(),
+    radius * Eigen::Vector3f::UnitX(),
     Eigen::Vector3f::Zero(),
-    10 * Eigen::Vector3f::UnitY(),
+    radius * Eigen::Vector3f::UnitY(),
     Eigen::Vector3f::Zero(),
-    10 * Eigen::Vector3f::UnitZ(),
+    radius * Eigen::Vector3f::UnitZ(),
   };
+
+  float increment = radius / subdivisions;
+  for (size_t i = 0; i < subdivisions; ++i) {
+    float v = (1 + i) * increment;
+    _positions.emplace_back(Eigen::Vector3f(v, 0, 0));
+    _positions.emplace_back(Eigen::Vector3f(v, 0, radius));
+
+    _positions.emplace_back(Eigen::Vector3f(0, 0, v));
+    _positions.emplace_back(Eigen::Vector3f(radius, 0, v));
+
+    _positions.emplace_back(Eigen::Vector3f(0, v, 0));
+    _positions.emplace_back(Eigen::Vector3f(0, v, radius));
+
+    _positions.emplace_back(Eigen::Vector3f(0, 0, v));
+    _positions.emplace_back(Eigen::Vector3f(0, radius, v));
+
+    _positions.emplace_back(Eigen::Vector3f(v, 0, 0));
+    _positions.emplace_back(Eigen::Vector3f(v, radius, 0));
+
+    _positions.emplace_back(Eigen::Vector3f(0, v, 0));
+    _positions.emplace_back(Eigen::Vector3f(radius, v, 0));
+  }
 
   glBindBuffer(GL_ARRAY_BUFFER, vbo);
   glBufferData(GL_ARRAY_BUFFER, _positions.size() * sizeof(Eigen::Vector3f), _positions.data(), GL_STATIC_DRAW);
@@ -47,6 +69,9 @@ void AxesEntity::draw() {
 
   mvp_program->set_color(Eigen::Vector3f::UnitZ());
   glDrawArrays(GL_LINES, 4, 2);
+
+  mvp_program->set_color_alpha(Eigen::Vector4f(0.5, 0.5, 0.5, 0.5));
+  glDrawArrays(GL_LINES, 4, _positions.size() - 4);
 
   glDisableVertexAttribArray(0);
   glBindVertexArray(0);

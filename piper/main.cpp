@@ -51,20 +51,24 @@ int main(int argc, const char* argv[]) {
   /*
   for(int i = 1; i <= 50; ++i) {
     auto zentity = std::make_shared<MeshEntity>(std::make_shared<Triangle>(1.5f, 0.0f), program_shared);
-    zentity->move(Eigen::Vector3f::UnitZ() * i);
+    zentity->pose().move(Eigen::Vector3f::UnitZ() * i);
     entities.emplace_back(zentity);
 
     auto yentity = std::make_shared<MeshEntity>(std::make_shared<Triangle>(0.5f, 0.0f), program_shared);
-    yentity->move(Eigen::Vector3f::UnitY() * i);
+    yentity->pose().move(Eigen::Vector3f::UnitY() * i);
     entities.emplace_back(yentity);
 
     auto xentity = std::make_shared<MeshEntity>(std::make_shared<Triangle>(1.0f, 0.0f), program_shared);
-    xentity->move(Eigen::Vector3f::UnitX() * i);
+    xentity->pose().move(Eigen::Vector3f::UnitX() * i);
     entities.emplace_back(xentity);
   }
   */
 
-  entities.emplace_back(std::make_shared<MeshEntity>(model_loaded, program_shared));
+  auto mesh = std::make_shared<MeshEntity>(model_loaded, program_shared);
+  mesh->pose() = Pose::LookAt(Eigen::Vector3f::Ones() * 3,
+                              Eigen::Vector3f::Zero());
+
+  entities.emplace_back(mesh);
   entities.emplace_back(std::make_shared<AxesEntity>());
 
   if (model_loaded == nullptr) {
@@ -72,9 +76,9 @@ int main(int argc, const char* argv[]) {
     return 1;
   }
 
-  auto lens = Lens::Perspective(((float)mWidth) / mHeight, 90, 1e-4, 1000.0f);
+  auto lens = Lens::Perspective(((float)mWidth) / mHeight, 110, 1e-4, 1000.0f);
   std::cout << "Lens matrix:" << std::endl << lens.matrix() << std::endl << std::endl;
-  auto pose = Pose::LookAt(Eigen::Vector3f(8, 8, 8), Eigen::Vector3f::Zero());
+  auto pose = Pose::LookAt(Eigen::Vector3f(0, 0, 8), Eigen::Vector3f::Zero());
   Camera camera = {pose, lens};
   std::cout << "Camera view matrix:" << std::endl << camera.pose().global_to_local() << std::endl << std::endl;
 
@@ -94,23 +98,23 @@ int main(int argc, const char* argv[]) {
       glfwSetWindowShouldClose(window, true);
     } 
     if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
-      camera.move(-speed * Eigen::Vector3f::UnitX());
+      camera.pose().move(-speed * Eigen::Vector3f::UnitX());
     } 
     if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
-      camera.move(speed * Eigen::Vector3f::UnitX());
+      camera.pose().move(speed * Eigen::Vector3f::UnitX());
     }
     if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
       if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
-        camera.move(speed * Eigen::Vector3f::UnitZ());
+        camera.pose().move(speed * Eigen::Vector3f::UnitZ());
       } else {
-        camera.move(speed * Eigen::Vector3f::UnitY());
+        camera.pose().move(speed * Eigen::Vector3f::UnitY());
       }
     } 
     if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
       if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
-        camera.move(-speed * Eigen::Vector3f::UnitZ());
+        camera.pose().move(-speed * Eigen::Vector3f::UnitZ());
       } else {
-        camera.move(-speed * Eigen::Vector3f::UnitY());
+        camera.pose().move(-speed * Eigen::Vector3f::UnitY());
       }
     }
 

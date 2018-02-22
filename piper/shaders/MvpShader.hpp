@@ -12,6 +12,7 @@ public:
   void set_model(const Pose& pose) override;
 
   void set_color(const Eigen::Vector3f& color);
+  void set_color_alpha(const Eigen::Vector4f& color);
 
   MvpShader(GLint id);
 

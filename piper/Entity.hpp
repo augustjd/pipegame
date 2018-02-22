@@ -45,8 +45,7 @@ public:
   virtual ~Entity() = default;
 
   const Pose& pose() const;
-
-  void move(const Eigen::Vector3f& translation);
+  Pose& pose();
 
   ShaderProgram* program();
 

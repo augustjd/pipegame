@@ -41,6 +41,9 @@ add_library(${PROJECT_NAME}_lib
   piper/shaders/Shader.hpp
   piper/shaders/Shader.cpp
 
+  piper/shaders/MvpShader.hpp
+  piper/shaders/MvpShader.cpp
+
   piper/shaders/PointLightingShader.hpp
   piper/shaders/PointLightingShader.cpp
   piper/shaders/Uniform.hpp
@@ -48,15 +51,22 @@ add_library(${PROJECT_NAME}_lib
 
   piper/meshes/Mesh.hpp
   piper/meshes/Mesh.cpp
+
   piper/meshes/MeshLoader.hpp
   piper/meshes/MeshLoader.cpp
+
   piper/meshes/Triangle.hpp
   piper/meshes/Triangle.cpp
+
+  piper/meshes/Cylinder.hpp
+  piper/meshes/Cylinder.cpp
 
   piper/Entity.hpp
   piper/Entity.cpp
   piper/MeshEntity.hpp
   piper/MeshEntity.cpp
+  piper/AxesEntity.hpp
+  piper/AxesEntity.cpp
 
   piper/Camera.hpp
   piper/Camera.cpp

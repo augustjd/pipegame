@@ -10,7 +10,7 @@
 
 class AxesEntity : public Entity {
 public:
-  AxesEntity();
+  AxesEntity(float radius = 10.0f, size_t subdivisions = 10);
 
   void draw() override;
 

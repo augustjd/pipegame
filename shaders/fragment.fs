@@ -38,9 +38,12 @@ struct Material
 
 uniform sampler2D texture_sampler;
 uniform vec3 ambientLight;
-uniform float specularPower;
+uniform float specularPower = 0.5;
 uniform Material material;
-uniform PointLight pointLight;
+uniform PointLight pointLight = PointLight(vec3(1.0, 1.0, 1.0),
+vec3(5.0, 5.0, 5.0),
+0.4,
+Attenuation(1.0, 0.0, 0.0));
 uniform DirectionalLight directionalLight;
 
 vec4 calcLightColour(vec3 light_colour, float light_intensity, vec3 position, vec3 to_light_dir, vec3 normal)

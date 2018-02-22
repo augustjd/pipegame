@@ -88,6 +88,6 @@ const Pose& Entity::pose() const {
 }
 
 
-void Entity::move(const Eigen::Vector3f& translation) {
-  _pose.move(translation);
+Pose& Entity::pose() { 
+  return _pose; 
 }
