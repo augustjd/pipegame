@@ -1,5 +1,6 @@
 #pragma once
 
+#include "shaders/PointLightingShader.hpp"
 #include "meshes/Mesh.hpp"
 #include "Entity.hpp"
 
@@ -14,4 +15,5 @@ public:
 
 private:
   std::shared_ptr<Mesh> _mesh;
+  PointLightingShader::Material _material;
 };

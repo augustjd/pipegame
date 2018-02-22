@@ -9,7 +9,7 @@
 #include "meshes/MeshLoader.hpp"
 #include "meshes/Triangle.hpp"
 #include "MeshEntity.hpp"
-#include "shaders/Shader.hpp"
+#include "shaders/PointLightingShader.hpp"
 #include "utils/filesystem.hpp"
 
 
@@ -38,16 +38,14 @@ int main(int argc, const char* argv[]) {
 
   auto model_filepath = path(argc > 1 ? argv[1] : "./models/bunny.obj");
 
-  auto vertex = *VertexShader::compile(*load_file_to_string("./shaders/vertex.vs"));
-  auto fragment = *FragmentShader::compile(*load_file_to_string("./shaders/fragment.fs"));
-
-  auto program = ShaderProgram::link(vertex, fragment).value();
+  auto program = PointLightingShader::load().value();
+  program.set_material({Eigen::Vector3f(0.2f, 0.5f, 0.5f), 1.0f});
 
   MeshLoader mesh_loader;
   bool debug_load_model = false;
   auto model_loaded = mesh_loader.load(model_filepath, debug_load_model);
 
-  auto program_shared = std::make_shared<ShaderProgram>(program);
+  auto program_shared = std::make_shared<PointLightingShader>(program);
   std::vector<std::shared_ptr<Entity>> entities;
   for(int i = 0; i <= 50; ++i) {
     auto zentity = std::make_shared<MeshEntity>(std::make_shared<Triangle>(1.5f, 0.0f), program_shared);
@@ -82,6 +80,9 @@ int main(int argc, const char* argv[]) {
   glfwGetFramebufferSize(window, &width, &height);
   glViewport(0, 0, width, height);
 
+  program.set_ambient_light(0.3f);
+
+
   float speed = 1e-1;
   // Rendering Loop
   while (glfwWindowShouldClose(window) == false) {
@@ -111,6 +112,16 @@ int main(int argc, const char* argv[]) {
 
     glClearColor(0.25f, 0.25f, 0.25f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    float time = static_cast<float>(glfwGetTime());
+    Eigen::Vector3f light_position = {std::cos(time * 2.0f) * 3, 3, std::sin(time * 2.0f) * 3};
+
+    std::cout << "Light is at " << light_position.transpose() << std::endl;
+
+    program.set_point_light({ Eigen::Vector3f(1.0f, 1.0f, 1.0f),
+                            light_position,
+                            0.5f,
+                            PointLightingShader::Attenuation{1, 0, 0} });
 
     for (auto& entity : entities) {
       camera.render(*entity);

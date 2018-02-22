@@ -22,6 +22,10 @@ public:
     return _id;
   }
 
+  GLint id() const {
+    return _id;
+  }
+
   const GLint _id;
 };
 

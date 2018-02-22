@@ -4,13 +4,18 @@ MeshEntity::MeshEntity(std::shared_ptr<Mesh> mesh,
                        std::shared_ptr<ShaderProgram> program,
                        const Pose& pose)
   : Entity(pose, program),
-  _mesh(mesh)
+  _mesh(mesh),
+  _material({ Eigen::Vector3f::Random().normalized(), 0.0 })
 {
 }
 
 
 void MeshEntity::draw() {
   program()->set_model(pose());
+
+  if (auto point_lighting_shader = dynamic_cast<PointLightingShader*>(program())) {
+    point_lighting_shader->set_material(_material);
+  }
 
   glBindVertexArray(_mesh->vertex_array());
   glEnableVertexAttribArray(0);
