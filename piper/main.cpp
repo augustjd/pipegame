@@ -9,10 +9,17 @@
 #include "meshes/MeshLoader.hpp"
 #include "meshes/Triangle.hpp"
 #include "meshes/Cylinder.hpp"
+#include "meshes/Ring.hpp"
 #include "MeshEntity.hpp"
 #include "AxesEntity.hpp"
 #include "shaders/PointLightingShader.hpp"
 #include "utils/filesystem.hpp"
+
+
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+    if (key == GLFW_KEY_D && action == GLFW_RELEASE) {
+      MeshEntity::DEBUG = !MeshEntity::DEBUG; }
+}
 
 
 int main(int argc, const char* argv[]) {
@@ -91,6 +98,8 @@ int main(int argc, const char* argv[]) {
   glViewport(0, 0, width, height);
 
   program.set_ambient_light(0.3f);
+
+  glfwSetKeyCallback(window, key_callback);
 
 
   float speed = 1e-1;

@@ -1,5 +1,9 @@
 #include "MeshEntity.hpp"
 
+
+bool MeshEntity::DEBUG = false;
+
+
 MeshEntity::MeshEntity(std::shared_ptr<Mesh> mesh,
                        std::shared_ptr<ShaderProgram> program,
                        const Pose& pose)
@@ -21,6 +25,12 @@ void MeshEntity::draw() {
   glEnableVertexAttribArray(0);
   glEnableVertexAttribArray(1);
   glEnableVertexAttribArray(2);
+
+  if (DEBUG) {
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+  } else {
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+  }
 
   glDrawElements(GL_TRIANGLES, _mesh->indices().size() * 3, GL_UNSIGNED_INT, 0);
 

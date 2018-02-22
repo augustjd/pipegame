@@ -60,6 +60,8 @@ add_library(${PROJECT_NAME}_lib
 
   piper/meshes/Cylinder.hpp
   piper/meshes/Cylinder.cpp
+  piper/meshes/Ring.hpp
+  piper/meshes/Ring.cpp
 
   piper/Entity.hpp
   piper/Entity.cpp
