@@ -70,6 +70,9 @@ add_library(${PROJECT_NAME}_lib
   piper/AxesEntity.hpp
   piper/AxesEntity.cpp
 
+  piper/RadialSimulation.hpp
+  piper/RadialSimulation.cpp
+
   piper/Camera.hpp
   piper/Camera.cpp
 

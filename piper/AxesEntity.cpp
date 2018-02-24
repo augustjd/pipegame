@@ -53,7 +53,7 @@ AxesEntity::AxesEntity(float radius, size_t subdivisions)
 
 
 void AxesEntity::draw() {
-  auto mvp_program = dynamic_cast<MvpShader*>(program());
+  auto mvp_program = std::dynamic_pointer_cast<MvpShader>(program());
   assert(mvp_program);
 
   mvp_program->set_model(pose());

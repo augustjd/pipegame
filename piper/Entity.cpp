@@ -78,8 +78,8 @@ Entity::Entity(const Pose& pose,
 }
 
 
-ShaderProgram* Entity::program() {
-  return _program.get();
+std::shared_ptr<ShaderProgram> Entity::program() {
+  return _program;
 }
 
 

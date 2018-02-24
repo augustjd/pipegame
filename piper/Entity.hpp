@@ -47,11 +47,11 @@ public:
   const Pose& pose() const;
   Pose& pose();
 
-  ShaderProgram* program();
+  std::shared_ptr<ShaderProgram> program();
 
   virtual void draw() {};
 
-private:
+protected:
   Pose _pose;
   std::shared_ptr<ShaderProgram> _program;
 };

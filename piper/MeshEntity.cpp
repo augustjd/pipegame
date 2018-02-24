@@ -17,7 +17,7 @@ MeshEntity::MeshEntity(std::shared_ptr<Mesh> mesh,
 void MeshEntity::draw() {
   program()->set_model(pose());
 
-  if (auto point_lighting_shader = dynamic_cast<PointLightingShader*>(program())) {
+  if (auto point_lighting_shader = std::dynamic_pointer_cast<PointLightingShader>(program())) {
     point_lighting_shader->set_material(_material);
   }
 
@@ -39,4 +39,9 @@ void MeshEntity::draw() {
   glDisableVertexAttribArray(2);
   glBindVertexArray(0);
   glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+
+const Mesh& MeshEntity::mesh() {
+  return *_mesh;
 }

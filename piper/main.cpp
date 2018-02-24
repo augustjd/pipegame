@@ -11,6 +11,7 @@
 #include "meshes/Cylinder.hpp"
 #include "meshes/Ring.hpp"
 #include "MeshEntity.hpp"
+#include "RadialSimulation.hpp"
 #include "AxesEntity.hpp"
 #include "shaders/PointLightingShader.hpp"
 #include "utils/filesystem.hpp"
@@ -56,39 +57,25 @@ int main(int argc, const char* argv[]) {
 
   auto program_shared = std::make_shared<PointLightingShader>(program);
   std::vector<std::shared_ptr<Entity>> entities;
-  /*
-  for(int i = 1; i <= 50; ++i) {
-    auto zentity = std::make_shared<MeshEntity>(std::make_shared<Triangle>(1.5f, 0.0f), program_shared);
-    zentity->pose().move(Eigen::Vector3f::UnitZ() * i);
-    entities.emplace_back(zentity);
 
-    auto yentity = std::make_shared<MeshEntity>(std::make_shared<Triangle>(0.5f, 0.0f), program_shared);
-    yentity->pose().move(Eigen::Vector3f::UnitY() * i);
-    entities.emplace_back(yentity);
+  float world_radius = 20.0f;
 
-    auto xentity = std::make_shared<MeshEntity>(std::make_shared<Triangle>(1.0f, 0.0f), program_shared);
-    xentity->pose().move(Eigen::Vector3f::UnitX() * i);
-    entities.emplace_back(xentity);
-  }
-  */
+  auto simulation = std::make_shared<RadialSimulation>(world_radius);
 
-  auto mesh = std::make_shared<MeshEntity>(model_loaded, program_shared);
-  mesh->pose() = Pose::LookAt(Eigen::Vector3f::Ones() * 3,
-                              Eigen::Vector3f::Zero());
-
-  entities.emplace_back(mesh);
   entities.emplace_back(std::make_shared<AxesEntity>());
 
-  //entities.emplace_back(std::make_shared<MeshEntity>(std::make_shared<Cylinder>(3.0f, 5.0f, 30, 20), program_shared));
+  simulation->add_entity(std::make_unique<MeshEntity>(model_loaded, program_shared));
+
+  entities.emplace_back(std::make_shared<MeshEntity>(std::make_shared<Cylinder>(world_radius, 1000.0f, 30, 20), program_shared));
   entities.emplace_back(std::make_shared<MeshEntity>(std::make_shared<Ring>(2.0f, 3.0f, 5.0f, 1.57f, 30, 8), program_shared));
   if (model_loaded == nullptr) {
     std::cout << "Failed to load " << model_filepath << std::endl;
     return 1;
   }
 
-  auto lens = Lens::Perspective(((float)mWidth) / mHeight, 110, 1e-4, 1000.0f);
+  auto lens = Lens::Perspective(((float)mWidth) / mHeight, 60.0f, 1e-4, 1000.0f);
   std::cout << "Lens matrix:" << std::endl << lens.matrix() << std::endl << std::endl;
-  auto pose = Pose::LookAt(Eigen::Vector3f(0, 0, 8), Eigen::Vector3f::Zero());
+  auto pose = Pose::LookAt(Eigen::Vector3f::Zero(), Eigen::Vector3f::UnitZ());
   Camera camera = {pose, lens};
   std::cout << "Camera view matrix:" << std::endl << camera.pose().global_to_local() << std::endl << std::endl;
 
@@ -130,13 +117,12 @@ int main(int argc, const char* argv[]) {
       }
     }
 
-    glClearColor(0.25f, 0.25f, 0.25f, 1.0f);
+    glClearColor(0, 0, 0, 1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     float time = static_cast<float>(glfwGetTime());
     Eigen::Vector3f light_position = {std::cos(time * 2.0f) * 3, 3, std::sin(time * 2.0f) * 3};
 
-    std::cout << "Light is at " << light_position.transpose() << std::endl;
 
     program.set_point_light({ Eigen::Vector3f(1.0f, 1.0f, 1.0f),
                             light_position,
@@ -146,6 +132,9 @@ int main(int argc, const char* argv[]) {
     for (auto& entity : entities) {
       camera.render(*entity);
     }
+
+    simulation->update();
+    simulation->draw(camera);
 
     // Flip Buffers and Draw
     glfwSwapBuffers(window);

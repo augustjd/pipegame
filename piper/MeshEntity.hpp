@@ -15,6 +15,8 @@ public:
 
   static bool DEBUG;
 
+  const Mesh& mesh();
+
 private:
   std::shared_ptr<Mesh> _mesh;
   PointLightingShader::Material _material;
