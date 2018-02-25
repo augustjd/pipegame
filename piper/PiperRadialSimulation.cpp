@@ -19,6 +19,7 @@ PiperRadialSimulation::PiperRadialSimulation(float radius, std::shared_ptr<Shade
 
 
 void PiperRadialSimulation::before_update() {
+  if (paused()) return;
   float spawn_rate = 3.5f;
   auto now = glfwGetTime();
   if ((now -_last_spawn) > spawn_rate) {
@@ -28,7 +29,20 @@ void PiperRadialSimulation::before_update() {
 }
 
 
+void PiperRadialSimulation::draw(Camera& camera) {
+  if (_gameover) {
+    glClearColor(1, 0, 0, 1);
+  } else {
+    glClearColor(0, 0, 0, 1);
+  }
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    RadialSimulation::draw(camera);
+}
+
+
 void PiperRadialSimulation::update() {
+  if (paused()) return;
   RadialSimulation::update();
   check_collisions();
 }
@@ -42,7 +56,7 @@ RadialMeshEntity& PiperRadialSimulation::player() const {
 void PiperRadialSimulation::set_player(std::unique_ptr<MeshEntity> player) {
   auto& entity = add_entity(std::move(player));
   _player_id = entity.id();
-  entity.set_theta(1.0f * M_PI / 2.0f);
+  entity.set_theta(3.0f * M_PI / 2.0f);
   entity.set_z(15.0f);
 }
 
@@ -73,7 +87,7 @@ void PiperRadialSimulation::spawn_ring() {
 
 
   float min_omega = 2 * M_PI * 0.25f; // 1/8 circle
-  float max_omega = 2 * M_PI * 0.70f;  // 3/4 circle;
+  float max_omega = 2 * M_PI * 0.60f;  // 3/4 circle;
   entity.set_omega(random_float(min_omega, max_omega) * (flip_coin(0.5f) ? 1 : -1));
 }
 
@@ -87,6 +101,8 @@ void PiperRadialSimulation::check_collisions() {
 
     if (check_collision(p, *pair.second)) {
       pair.second->set_color(Eigen::Vector3f::UnitX());
+      _gameover = true;
+      std::cout << "Game over! Press 'r' to play again." << std::endl;
     }
   }
 }
@@ -95,4 +111,52 @@ void PiperRadialSimulation::check_collisions() {
 bool PiperRadialSimulation::check_collision(const RadialMeshEntity& l, const RadialMeshEntity& r) {
   float z_front = l.z() + 1.0f;
   return angle_is_between(l.theta(), r.theta(), r.radial_width()) && ((r.z() - r.axial_depth()) <= z_front && r.z() > l.z());
+}
+
+
+void PiperRadialSimulation::reset() {
+  auto& p = player();
+  p.set_theta(3.0f * M_PI / 2.0f);
+  p.set_z(15.0f);
+
+  std::vector<int> to_delete;
+  for (auto& entity : _entities) {
+    to_delete.emplace_back(entity.first);
+  }
+
+  for (auto id : to_delete) {
+    if (id != p.id()) {
+      remove_entity(id);
+    }
+  }
+
+  _gameover = false;
+
+  unpause();
+}
+
+
+void PiperRadialSimulation::pause() {
+  _paused = true;
+  _last_spawn = glfwGetTime() - _last_spawn; // save how long ago the spawn was.
+}
+
+
+void PiperRadialSimulation::unpause() {
+  _last_spawn = glfwGetTime() - _last_spawn;
+  _last_frame = glfwGetTime();
+  _paused = false;
+}
+
+
+bool PiperRadialSimulation::paused() const {
+  return _paused || _gameover;
+}
+
+
+void PiperRadialSimulation::remove_entity(int id) {
+  RadialSimulation::remove_entity(id);
+  score += 1;
+
+  std::cout << "Score: " << score << std::endl;
 }

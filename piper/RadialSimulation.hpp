@@ -75,7 +75,7 @@ public:
 
   RadialMeshEntity& add_entity(std::unique_ptr<MeshEntity> entity);
   RadialMeshEntity& add_precentered_entity(std::unique_ptr<MeshEntity> entity);
-  void remove_entity(int id);
+  virtual void remove_entity(int id);
 
   virtual void update();
   virtual void draw(Camera& camera);

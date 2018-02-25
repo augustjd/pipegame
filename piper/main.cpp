@@ -23,9 +23,25 @@ T clamp(T value, T min, T max) {
 }
 
 
+std::shared_ptr<PiperRadialSimulation> simulation;
+
+
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
-    if (key == GLFW_KEY_D && action == GLFW_RELEASE) {
-      MeshEntity::DEBUG = !MeshEntity::DEBUG; }
+  if (key == GLFW_KEY_D && action == GLFW_RELEASE) {
+    MeshEntity::DEBUG = !MeshEntity::DEBUG; 
+  }
+
+  if (key == GLFW_KEY_R && action == GLFW_RELEASE) {
+    simulation->reset();
+  }
+
+  if (key == GLFW_KEY_P && action == GLFW_RELEASE) {
+    if (simulation->paused()) {
+      simulation->unpause();
+    } else {
+      simulation->pause();
+    }
+  }
 }
 
 
@@ -66,7 +82,7 @@ int main(int argc, const char* argv[]) {
 
   float world_radius = 8.0f;
 
-  auto simulation = std::make_shared<PiperRadialSimulation>(world_radius, program_shared);
+  simulation = std::make_shared<PiperRadialSimulation>(world_radius, program_shared);
   simulation->set_player(std::make_unique<MeshEntity>(model_loaded, program_shared));
 
   //entities.emplace_back(std::make_shared<AxesEntity>());
@@ -108,9 +124,6 @@ int main(int argc, const char* argv[]) {
       glfwSetWindowShouldClose(window, true);
     } 
 
-    glClearColor(0, 0, 0, 1);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
     float time = static_cast<float>(glfwGetTime());
     Eigen::Vector3f light_position = {std::cos(time * 2.0f), 0, std::sin(time * 2.0f) + 30.0f};
 
@@ -125,10 +138,6 @@ int main(int argc, const char* argv[]) {
                                   Eigen::Vector3f::UnitZ(),
                                   0.3
                                   });
-
-    for (auto& entity : entities) {
-      camera.render(*entity);
-    }
 
     auto& _player = simulation->player();
     float player_max_omega = 3.5f;
@@ -151,6 +160,10 @@ int main(int argc, const char* argv[]) {
     simulation->before_update();
     simulation->update();
     simulation->draw(camera);
+
+    for (auto& entity : entities) {
+      camera.render(*entity);
+    }
 
     // Flip Buffers and Draw
     glfwSwapBuffers(window);
