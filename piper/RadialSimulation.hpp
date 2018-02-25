@@ -9,10 +9,10 @@
 
 class RadialSimulation;
 
-
 class RadialMeshEntity: public Entity {
 public:
   RadialMeshEntity(std::unique_ptr<MeshEntity> other, std::shared_ptr<RadialSimulation> simulation, int id);
+  RadialMeshEntity(std::unique_ptr<MeshEntity> other, std::shared_ptr<RadialSimulation> simulation, int id, float radial_width, float axial_depth);
 
   float theta() const { return _theta; }
   float omega() const { return _omega; }
@@ -23,6 +23,8 @@ public:
   float set_theta(float new_theta) { _theta = new_theta; }
   float set_omega(float new_omega) { _omega = new_omega; }
 
+  void set_color(const Eigen::Vector3f& color);
+
   float set_z(float new_z) { _z = new_z; }
   float set_v(float new_v) { _v = new_v; }
 
@@ -30,11 +32,14 @@ public:
   void draw() override;
 
   int id() const { return _id; }
-private:
+
+  float radial_width() const { return _radial_width; }
+  float axial_depth() const { return _axial_depth; }
+protected:
   float measure_radial_width(const Mesh& mesh, float world_radius);
   float measure_axial_depth(const Mesh& mesh, float world_radius);
 
-  void update_pose();
+  virtual void update_pose();
 
   std::unique_ptr<MeshEntity> _deferred;
 
@@ -52,20 +57,33 @@ private:
 };
 
 
+class PreCenteredRadialMeshEntity: public RadialMeshEntity {
+public:
+  PreCenteredRadialMeshEntity(std::unique_ptr<MeshEntity> other, std::shared_ptr<RadialSimulation> simulation, int id);
+  PreCenteredRadialMeshEntity(std::unique_ptr<MeshEntity> other, std::shared_ptr<RadialSimulation> simulation, int id, float radial_width, float axial_depth);
+
+protected:
+  void update_pose() override;
+};
+
+
 class RadialSimulation : public std::enable_shared_from_this<RadialSimulation> {
 public:
   RadialSimulation(float radius);
 
   float radius() const;
 
-  void add_entity(std::unique_ptr<MeshEntity> entity);
+  RadialMeshEntity& add_entity(std::unique_ptr<MeshEntity> entity);
+  RadialMeshEntity& add_precentered_entity(std::unique_ptr<MeshEntity> entity);
   void remove_entity(int id);
 
-  void update();
-  void draw(Camera& camera);
+  virtual void update();
+  virtual void draw(Camera& camera);
 
-private:
-  std::unordered_map<int, RadialMeshEntity> _entities;
+protected:
+  std::unordered_map<int, std::unique_ptr<RadialMeshEntity>> _entities;
   float _last_frame;
   float _radius;
+
+  int next_id = 0;
 };

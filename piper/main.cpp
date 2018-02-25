@@ -1,5 +1,6 @@
 #include "glitter.hpp"
 
+#include <algorithm>
 #include <iostream>
 
 #include <glad/glad.h>
@@ -11,10 +12,15 @@
 #include "meshes/Cylinder.hpp"
 #include "meshes/Ring.hpp"
 #include "MeshEntity.hpp"
-#include "RadialSimulation.hpp"
+#include "PiperRadialSimulation.hpp"
 #include "AxesEntity.hpp"
 #include "shaders/PointLightingShader.hpp"
 #include "utils/filesystem.hpp"
+
+template <typename T>
+T clamp(T value, T min, T max) {
+  return std::min(std::max(value, min), max);
+}
 
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
@@ -58,16 +64,18 @@ int main(int argc, const char* argv[]) {
   auto program_shared = std::make_shared<PointLightingShader>(program);
   std::vector<std::shared_ptr<Entity>> entities;
 
-  float world_radius = 20.0f;
+  float world_radius = 8.0f;
 
-  auto simulation = std::make_shared<RadialSimulation>(world_radius);
+  auto simulation = std::make_shared<PiperRadialSimulation>(world_radius, program_shared);
+  simulation->set_player(std::make_unique<MeshEntity>(model_loaded, program_shared));
 
-  entities.emplace_back(std::make_shared<AxesEntity>());
+  //entities.emplace_back(std::make_shared<AxesEntity>());
 
-  simulation->add_entity(std::make_unique<MeshEntity>(model_loaded, program_shared));
+  auto cylinder = std::make_shared<MeshEntity>(std::make_shared<Cylinder>(world_radius + 0.5f, 1000.0f, 200, 200), program_shared);
+  cylinder->debug = true;
+  cylinder->set_color(Eigen::Vector3f(0.25f, 0.25f, 0.25f));
+  entities.emplace_back(cylinder);
 
-  entities.emplace_back(std::make_shared<MeshEntity>(std::make_shared<Cylinder>(world_radius, 1000.0f, 30, 20), program_shared));
-  entities.emplace_back(std::make_shared<MeshEntity>(std::make_shared<Ring>(2.0f, 3.0f, 5.0f, 1.57f, 30, 8), program_shared));
   if (model_loaded == nullptr) {
     std::cout << "Failed to load " << model_filepath << std::endl;
     return 1;
@@ -85,9 +93,12 @@ int main(int argc, const char* argv[]) {
   glfwGetFramebufferSize(window, &width, &height);
   glViewport(0, 0, width, height);
 
-  program.set_ambient_light(0.3f);
+  program.set_ambient_light(0.5f);
 
   glfwSetKeyCallback(window, key_callback);
+
+
+  float spawn_probability = 1e-2;
 
 
   float speed = 1e-1;
@@ -96,43 +107,48 @@ int main(int argc, const char* argv[]) {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
       glfwSetWindowShouldClose(window, true);
     } 
-    if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
-      camera.pose().move(-speed * Eigen::Vector3f::UnitX());
-    } 
-    if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
-      camera.pose().move(speed * Eigen::Vector3f::UnitX());
-    }
-    if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
-      if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
-        camera.pose().move(speed * Eigen::Vector3f::UnitZ());
-      } else {
-        camera.pose().move(speed * Eigen::Vector3f::UnitY());
-      }
-    } 
-    if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
-      if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
-        camera.pose().move(-speed * Eigen::Vector3f::UnitZ());
-      } else {
-        camera.pose().move(-speed * Eigen::Vector3f::UnitY());
-      }
-    }
 
     glClearColor(0, 0, 0, 1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     float time = static_cast<float>(glfwGetTime());
-    Eigen::Vector3f light_position = {std::cos(time * 2.0f) * 3, 3, std::sin(time * 2.0f) * 3};
+    Eigen::Vector3f light_position = {std::cos(time * 2.0f), 0, std::sin(time * 2.0f) + 30.0f};
 
 
     program.set_point_light({ Eigen::Vector3f(1.0f, 1.0f, 1.0f),
                             light_position,
-                            0.5f,
+                            0.9f,
                             PointLightingShader::Attenuation{1, 0, 0} });
+
+    program.set_directional_light({
+                                  Eigen::Vector3f::Ones(),
+                                  Eigen::Vector3f::UnitZ(),
+                                  0.3
+                                  });
 
     for (auto& entity : entities) {
       camera.render(*entity);
     }
 
+    auto& _player = simulation->player();
+    float player_max_omega = 3.5f;
+    float player_acceleration = 0.15f;
+    bool accelerating = false;
+    if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
+      _player.set_omega(_player.omega() + player_acceleration);
+      accelerating = true;
+    }
+    if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
+      _player.set_omega(_player.omega() - player_acceleration);
+      accelerating = true;
+    }
+
+    if (!accelerating) {
+      _player.set_omega(_player.omega() * 0.99f); // friction.
+    }
+    _player.set_omega(clamp(_player.omega(), -player_max_omega, player_max_omega));
+
+    simulation->before_update();
     simulation->update();
     simulation->draw(camera);
 

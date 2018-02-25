@@ -2,6 +2,8 @@
 
 #include <iostream>
 
+#include <Eigen/Geometry>
+
 
 Ring::Ring(float inner_radius, float outer_radius, float length, float arc, size_t radial_sections, size_t length_sections)
   : Mesh(calculate(inner_radius, outer_radius, length, arc, radial_sections, length_sections))
@@ -89,6 +91,13 @@ Mesh Ring::calculate(float inner_radius, float outer_radius, float length, float
     int last_ring_offset = (length_sections - 1) * radial_sections;
     _indices.emplace_back(triangle + Eigen::Vector3i::Constant(last_ring_offset));
     _indices.emplace_back(triangle2 + Eigen::Vector3i::Constant(last_ring_offset));
+  }
+
+
+  auto transform = Eigen::AngleAxisf(-arc*0.5f + M_PI * 3.0f / 2.0f, Eigen::Vector3f::UnitZ());
+
+  for (size_t i = 0; i < _positions.size(); ++i) {
+    _positions.at(i) = transform * _positions.at(i);
   }
 
   return Mesh(std::move(_positions),

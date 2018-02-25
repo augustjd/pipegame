@@ -38,6 +38,12 @@ add_library(${PROJECT_NAME}_lib
   piper/utils/filesystem.hpp
   piper/utils/filesystem.cpp
 
+  piper/utils/probability.hpp
+  piper/utils/probability.cpp
+
+  piper/utils/angles.hpp
+  piper/utils/angles.cpp
+
   piper/shaders/Shader.hpp
   piper/shaders/Shader.cpp
 
@@ -72,6 +78,8 @@ add_library(${PROJECT_NAME}_lib
 
   piper/RadialSimulation.hpp
   piper/RadialSimulation.cpp
+  piper/PiperRadialSimulation.hpp
+  piper/PiperRadialSimulation.cpp
 
   piper/Camera.hpp
   piper/Camera.cpp

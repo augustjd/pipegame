@@ -26,7 +26,7 @@ void MeshEntity::draw() {
   glEnableVertexAttribArray(1);
   glEnableVertexAttribArray(2);
 
-  if (DEBUG) {
+  if (DEBUG || debug) {
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
   } else {
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -44,4 +44,9 @@ void MeshEntity::draw() {
 
 const Mesh& MeshEntity::mesh() {
   return *_mesh;
+}
+
+
+void MeshEntity::set_color(const Eigen::Vector3f& color) {
+  _material.color = color;
 }
